@@ -31,6 +31,8 @@ a.put('test', 'a', function(){
 
 ### options.prefix
 
+Supports options.prefix property. A batch operation can be applied into multiple sections under the same database.
+
 ```js
 var a = sub(db, 'a');
 var b = sub(db, 'b');
