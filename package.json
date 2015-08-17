@@ -1,0 +1,30 @@
+{
+  "name": "sublevelup",
+  "version": "1.0.0",
+  "description": "SubLevel implemented using LevelUP and PrefixDOWN",
+  "dependencies": {
+    "levelup": "^1.2.1",
+    "prefixdown": "^1.1.0",
+    "xtend": "^4.0.0"
+  },
+  "devDependencies": {
+    "memdown": "^1.0.0",
+    "tape": "^4.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cshum/sublevelup.git"
+  },
+  "author": "Adrian C Shum",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cshum/sublevelup/issues"
+  },
+  "homepage": "https://github.com/cshum/sublevelup",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node test/test.js"
+  }
+}
