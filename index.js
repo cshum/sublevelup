@@ -12,7 +12,7 @@ module.exports = function(db, name, options){
     //PrefixDOWN backed
     return levelup(
       db.location.slice(0,-1) + '#'+name+'!',
-      xtend(db.options, options)
+      xtend(db.options, options, { db: db.options.db })
     );
   }else{
     //root levelup
