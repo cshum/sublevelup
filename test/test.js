@@ -9,11 +9,13 @@ test('location', function(t){
     keyEncoding: 'utf8',
     valueEncoding: 'json' 
   });
-  var dbA = sub(db, 'a', {keyEncoding: 'binary'});
+  var dbA = sub(db, 'a', { keyEncoding: 'binary' });
   var dbAB = sub(dbA, 'b');
   var dbABC = sub(dbAB, 'c');
+  var dbB = sub(db, 'b');
   t.equal(db.location, 'root', 'root levelup');
   t.equal(dbA.location, '!a!', 'sub of root');
+  t.equal(dbB.location, '!b!', 'sub of root');
   t.equal(dbAB.location, '!a#b!', 'sub of sub');
   t.equal(dbABC.location, '!a#b#c!', 'sub of sub of sub');
   t.equal(db.options.keyEncoding, 'utf8', 'option');

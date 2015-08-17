@@ -1,6 +1,6 @@
 # SublevelUP
 
-Sublevels implemented using LevelUP and PrefixDOWN
+Sublevels implemented using [LevelUP](https://github.com/Level/levelup) and [PrefixDOWN](https://github.com/cshum/prefixdown/)
 
 [![Build Status](https://travis-ci.org/cshum/sublevelup.svg)](https://travis-ci.org/cshum/sublevelup)
 
