@@ -27,13 +27,6 @@ a.put('test', 'a', function(){
     });
   });
 });
-
-test.put('hello', 'world', function() {
-  nested.put('hi', 'welt', function() {
-    // will print {key:'hello', value:'world'}
-    test.createReadStream().on('data', console.log)
-  })
-})
 ```
 
 ### options.prefix
