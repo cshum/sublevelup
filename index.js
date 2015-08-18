@@ -8,7 +8,7 @@ module.exports = function(db, name, options){
     name = '';
   }
   //db is levelup instance
-  if(db.options.db.name === 'PrefixDOWN'){
+  if(db.options.db && db.options.db.name === 'PrefixDOWN'){
     //PrefixDOWN backed
     return levelup(
       db.location.slice(0,-1) + '#'+name+'!',
