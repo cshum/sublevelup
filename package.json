@@ -4,11 +4,13 @@
   "description": "SubLevel implemented using LevelUP and PrefixDOWN",
   "dependencies": {
     "levelup": "^1.2.1",
-    "prefixdown": "^1.1.0",
+    "prefixdown": "^1.1.2",
     "xtend": "^4.0.0"
   },
   "devDependencies": {
     "memdown": "^1.0.0",
+    "mydown": "^1.1.1",
+    "mysql": "^2.9.0",
     "tape": "^4.1.0"
   },
   "repository": {
