@@ -1,9 +1,18 @@
 # SublevelUP
 
-Sublevels implemented using [LevelUP](https://github.com/Level/levelup) and [PrefixDOWN](https://github.com/cshum/prefixdown/)
+Sublevel interface for both [prefix-based](#prefix-based-sublevel) and [table-based](#table-based-sublevel) sublevels with custom codec support.
 
 [![Build Status](https://travis-ci.org/cshum/sublevelup.svg)](https://travis-ci.org/cshum/sublevelup)
 
+## API
+
+### sublevel = require('sublevelup')(base, [codec])
+### db = sublevel([db], name, [options])
+### Custom codec
+
+## Prefix based sublevel
+
+Sublevels implemented using [LevelUP](https://github.com/Level/levelup) and [PrefixDOWN](https://github.com/cshum/prefixdown/)
 ### sub(db, [name], [options])
 ```js
 var sub = require('sublevelup');
@@ -29,19 +38,7 @@ a.put('test', 'a', function(){
 });
 ```
 
-### options.prefix
-
-Supports options.prefix property. A batch operation can be applied into multiple sections under the same database.
-
-```js
-var a = sub(db, 'a');
-var b = sub(db, 'b');
-
-a.batch([
-  {key: 'key', value: 'a', type: 'put'}, //put under a
-  {key: 'key', value: 'b', type: 'put', prefix: b}, //put under b
-], ...);
-```
+## Table based sublevel
 
 ## License
 
