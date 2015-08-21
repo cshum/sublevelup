@@ -21,8 +21,7 @@ npm install sublevelup
 The "standard" way of creating sublevels.
 
 Given the fact that LevelDB stores entries lexicographically sorted by keys,
-it is possible to creating a “sandboxed” section using ranged key prefix for accessing database.
-This enables a modular, hierarchical structure for creating sections in LevelDB. 
+it is possible to creating a "sandboxed" section using ranged key prefix.
 Unlike separated LevelDB instances, atomic batched write works across sublevels, which is an important primitive for consistency.
 
 SublevelUP uses [PrefixDOWN](https://github.com/cshum/prefixdown/) by default, which returns a prefixed backend by taking the base LevelUP instance. 
@@ -43,15 +42,16 @@ var fooBarBla = sub(fooBar, 'bla'); //prefix !foo#bar#bla!
 ## Table-based sublevel
 
 The prefix approach, while its a good fit for LevelDB, ill-suited for using SQL database as a LevelUP backend.
-Concatenating every sublevels into one single index is not ideal for B-tree index that most SQL database uses.
+Concatenating every sublevels into one single table is not ideal for B-tree index that most SQL database uses.
 It is also silly given SQL database has already got tables for such purpose, hence the table-based sublevel.
 
 Atomic batched write works across table-based sublevels, given most SQL databases support transactions across tables. 
 
-[MyDOWN](https://github.com/cshum/mydown) for example, a MySQL backend that exposes a LevelDOWN compatible factory, where levelup() specifies table as location argument:
+[MyDOWN](https://github.com/cshum/mydown) for example, a MySQL backend that exposes a LevelDOWN compatible factory, where `levelup()` specifies table as location argument:
 
 ```js
 var mydown = require('mydown');
+var sublevelup = require('sublevelup');
 
 var sub = sublevelup(mydown('db', {
   host:     'localhost',
