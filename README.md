@@ -101,7 +101,7 @@ Accepts [custom codec](#custom-codec).
 
 ### db = sub([db], name, [options])
 
-Returns a [LevelUP] instance under `name`. Optional `db` for nesting sublevels.
+Returns a [LevelUP](https://github.com/Level/levelup) instance under sublevel `name`. Optional `db` for nesting sublevels.
 
 ## License
 
