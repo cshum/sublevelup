@@ -37,6 +37,8 @@ module.exports = function(down, codec){
       name = db;
       db = null;
     }
+    if(typeof name !== 'string')
+      throw new Error('Sublevel must provide a name.');
     if(db){
       if(db.options.db !== down)
         throw new Error('LeveUP instance must be a Sublevel.');

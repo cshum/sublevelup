@@ -32,6 +32,17 @@ test('Default', function(t){
   t.equal(foo.options.keyEncoding, 'binary', 'extend options');
   t.equal(fooBar.options.keyEncoding, 'json', 'extend options');
 
+  t.throws(
+    function(){ sub(db, 'name'); }, 
+    { name: 'Error', message: 'LeveUP instance must be a Sublevel.' },
+    'sub(db, name) non-sublevel db throws'
+  );
+  t.throws(
+    function(){ sub(foo); }, 
+    { name: 'Error', message: 'Sublevel must provide a name.' },
+    'sub() without name throws'
+  );
+
   t.end();
 });
 
