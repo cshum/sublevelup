@@ -12,20 +12,25 @@ var db = levelup('db', {
 });
 
 test('Default', function(t){
-  var sub = sublevelup(db);
+  var sublevel = sublevelup(db);
 
-  var hello = sub('hello');
-  var foo = sub(null, 'foo', { keyEncoding: 'binary' });
-  var fooBar = sub(foo, 'bar', { keyEncoding: 'json' });
-  var fooBarBla = sub(fooBar, 'bla');
+  var hello = sublevel('hello');
+  var foo = sublevel(null, 'foo', { keyEncoding: 'binary' });
+  var fooBar = foo.sublevel('bar', { keyEncoding: 'json' });
+  var fooBarBla = sublevel(fooBar, 'bla');
 
   t.equal(foo.location, '!foo!', 'base sub');
   t.equal(hello.location, '!hello!', 'base sub');
   t.equal(fooBar.location, '!foo#bar!', 'nested sub');
   t.equal(fooBarBla.location, '!foo#bar#bla!', 'double nested sub');
 
+  t.equal(fooBarBla, sublevel(fooBar, 'bla'), 'reuse sublevel object');
+  t.equal(fooBarBla, fooBar.sublevel('bla'), 'reuse sublevel object');
+
   t.equal(foo.toString(), 'LevelUP', 'LevelUP');
   t.equal(fooBar.toString(), 'LevelUP', 'LevelUP');
+  t.ok(foo instanceof levelup, 'LevelUP');
+  t.ok(fooBar instanceof levelup, 'LevelUP');
 
   t.equal(hello.options.valueEncoding, 'json', 'inherit options');
   t.equal(foo.options.valueEncoding, 'json', 'inherit options');
@@ -33,21 +38,21 @@ test('Default', function(t){
   t.equal(fooBar.options.keyEncoding, 'json', 'extend options');
 
   t.throws(
-    function(){ sub(db, 'name'); }, 
+    function(){ sublevel(db, 'name'); }, 
     { name: 'Error', message: 'LeveUP instance must be a Sublevel.' },
-    'sub(db, name) non-sublevel db throws'
+    'sublevel(db, name) non-sublevel db throws'
   );
   t.throws(
-    function(){ sub(foo); }, 
+    function(){ sublevel(foo); }, 
     { name: 'Error', message: 'Sublevel must provide a name.' },
-    'sub() without name throws'
+    'sublevel() without name throws'
   );
 
   t.end();
 });
 
 test('Custom Prefix', function(t){
-  var sub = sublevelup(db, {
+  var sublevel = sublevelup(db, {
     encode: function(prefix){
       return '!' + prefix.join('!!') + '!';
     },
@@ -56,10 +61,10 @@ test('Custom Prefix', function(t){
     }
   });
 
-  var foo = sub('foo');
-  var hello = sub(null, 'hello');
-  var fooBar = sub(foo, 'bar');
-  var fooBarBla = sub(fooBar, 'bla');
+  var foo = sublevel('foo');
+  var hello = sublevel(null, 'hello');
+  var fooBar = sublevel(foo, 'bar');
+  var fooBarBla = sublevel(fooBar, 'bla');
 
   t.equal(foo.location, '!foo!', 'base sub');
   t.equal(hello.location, '!hello!', 'base sub');
@@ -86,12 +91,12 @@ var my = mydown('mydown', {
 
 test('Table based Sublevel', function(t){
   query('CREATE DATABASE IF NOT EXISTS mydown', function(){
-    var sub = sublevelup(my);
+    var sublevel = sublevelup(my);
 
-    var foo = sub(null, 'foo');
-    var hello = sub('hello');
-    var fooBar = sub(foo, 'bar');
-    var fooBarBla = sub(fooBar, 'bla');
+    var foo = sublevel(null, 'foo');
+    var hello = sublevel('hello');
+    var fooBar = sublevel(foo, 'bar');
+    var fooBarBla = fooBar.sublevel('bla');
 
     t.equal(foo.location, 'foo', 'base sub');
     t.equal(hello.location, 'hello', 'base sub');

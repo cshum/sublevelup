@@ -28,14 +28,12 @@ SublevelUP uses [PrefixDOWN](https://github.com/cshum/prefixdown/) by default, w
 
 ```js
 var level = require('level');
-var sublevelup = require('sublevelup');
+var sublevel = require('sublevelup')(level('./db'));
 
-var sub = sublevelup(level('./db'));
-
-var hello     = sub('hello'); //prefix !hello!
-var foo       = sub('foo'); //prefix !foo!
-var fooBar    = sub(foo, 'bar'); //prefix !foo#bar!
-var fooBarBla = sub(fooBar, 'bla'); //prefix !foo#bar#bla!
+var hello     = sublevel('hello'); //prefix !hello!
+var foo       = sublevel('foo'); //prefix !foo!
+var fooBar    = sublevel(foo, 'bar'); //prefix !foo#bar!
+var fooBarBla = fooBar.sublevel('bla'); //prefix !foo#bar#bla!
 
 ```
 
@@ -51,18 +49,16 @@ Atomic batched write works across table-based sublevels, given most SQL database
 
 ```js
 var mydown = require('mydown');
-var sublevelup = require('sublevelup');
-
-var sub = sublevelup(mydown('db', {
+var sublevel = require('sublevelup')(mydown('db', {
   host:     'localhost',
   user:     'root',
   password: 'secret'
 }));
 
-var hello     = sub('hello'); //table hello
-var foo       = sub('foo'); //table foo
-var fooBar    = sub(foo, 'bar'); //table foo_bar
-var fooBarBla = sub(fooBar, 'bla'); //table foo_bar_bla
+var hello     = sublevel('hello'); //table hello
+var foo       = sublevel('foo'); //table foo
+var fooBar    = sublevel(foo, 'bar'); //table foo_bar
+var fooBarBla = fooBar.sublevel('bla'); //table foo_bar_bla
 
 ```
 
@@ -72,36 +68,38 @@ It is possible to create custom codec for sublevel prefix or table name. Simply 
 
 ```js
 var level = require('level');
-var sublevelup = require('sublevelup');
-
-var sub = sublevelup(level('./db'), {
-  encode: function(prefix){
+var sublevel = require('sublevelup')(level('./db'), {
+  encode: function (prefix) {
     return '!' + prefix.join('!!') + '!';
   },
-  decode: function(location){
-    return location.slice(1,-1).split('!!');
+  decode: function (location) {
+    return location.slice(1, -1).split('!!');
   }
 });
 
-var hello     = sub('hello'); //prefix !hello!
-var foo       = sub('foo'); //prefix !foo!
-var fooBar    = sub(foo, 'bar'); //prefix !foo!!bar!
-var fooBarBla = sub(fooBar, 'bla'); //prefix !foo!!bar!!bla!
+var hello     = sublevel('hello'); //prefix !hello!
+var foo       = sublevel('foo'); //prefix !foo!
+var fooBar    = sublevel(foo, 'bar'); //prefix !foo!!bar!
+var fooBarBla = fooBar.sublevel('bla'); //prefix !foo!!bar!!bla!
 
 ```
 
 ## API
 
-### sub = require('sublevelup')(base, [codec])
+### sublevel = require('sublevelup')(base, [codec])
 
 Sublevel factory. `base` is a LevelUP instance for 
 [prefix-based](#prefix-based-sublevel), LevelDOWN instance for 
 [table-based](#table-based-sublevel).
 Accepts [custom codec](#custom-codec).
 
-### db = sub([db], name, [options])
+### sub = sublevel([db], name, [options])
 
-Returns a [LevelUP](https://github.com/Level/levelup) instance under sublevel `name`. Optional `db` for nesting sublevels.
+Returns a [LevelUP](https://github.com/Level/levelup) instance under sublevel `name`. Optional `db` for nesting sublevel.
+
+### sub = db.sublevel(name, [options])
+
+Nested sublevel under `name`.
 
 ## License
 
