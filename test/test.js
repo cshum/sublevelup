@@ -14,6 +14,8 @@ var db = levelup('db', {
 test('Default', function(t){
   var sublevel = sublevelup(db);
 
+  t.equal(sublevelup(sublevel), sublevel, 'Passing sublevel return sublevel');
+
   var hello = sublevel('hello');
   var foo = sublevel(null, 'foo', { keyEncoding: 'binary' });
   var fooBar = foo.sublevel('bar', { keyEncoding: 'json' });
@@ -37,6 +39,11 @@ test('Default', function(t){
   t.equal(foo.options.keyEncoding, 'binary', 'extend options');
   t.equal(fooBar.options.keyEncoding, 'json', 'extend options');
 
+  t.throws(
+    function(){ sublevelup(); }, 
+    { name: 'Error', message: 'Missing sublevel base.' },
+    'sublevelup() no base throws'
+  );
   t.throws(
     function(){ sublevel(db, 'name'); }, 
     { name: 'Error', message: 'LeveUP instance must be a Sublevel.' },

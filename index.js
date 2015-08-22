@@ -23,6 +23,12 @@ var tableCodec = {
 
 module.exports = function (down, codec) {
   var defaults;
+  if(!down) 
+    throw new Error('Missing sublevel base.');
+  //passing Sublevel return Sublevel
+  if(down.name === 'Sublevel')
+    return down;
+
   if(down.toString() === 'LevelUP') {
     //prefix based
     if(!codec) codec = prefixCodec;
