@@ -51,6 +51,32 @@ test('Default', function(t){
   t.end();
 });
 
+test('batch prefix', function(t){
+  t.plan(3);
+  var sublevel = sublevelup(levelup({ db:memdown }));
+
+  var a = sublevel('a');
+  var b = sublevel('b');
+  var c = sublevel('c');
+
+  a.batch([
+    { type: 'put', key: 'foo', value: 'a' },
+    { type: 'put', key: 'foo', value: 'b', prefix: b },
+    { type: 'put', key: 'foo', value: 'c', prefix: '!c!' }
+  ], function(){
+    a.get('foo', function(err, val){
+      t.equal(val, 'a', 'default prefix');
+    });
+    b.get('foo', function(err, val){
+      t.equal(val, 'b', 'levelup prefixdown prefix');
+    });
+    c.get('foo', function(err, val){
+      t.equal(val, 'c', 'string prefix');
+    });
+  });
+
+});
+
 test('Custom Prefix', function(t){
   var sublevel = sublevelup(db, {
     encode: function(prefix){
