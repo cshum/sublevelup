@@ -15,7 +15,7 @@ test('Default', function(t){
   var sub = sublevelup(db);
 
   var hello = sub('hello');
-  var foo = sub('foo', { keyEncoding: 'binary' });
+  var foo = sub(null, 'foo', { keyEncoding: 'binary' });
   var fooBar = sub(foo, 'bar', { keyEncoding: 'json' });
   var fooBarBla = sub(fooBar, 'bla');
 
@@ -57,7 +57,7 @@ test('Custom Prefix', function(t){
   });
 
   var foo = sub('foo');
-  var hello = sub('hello');
+  var hello = sub(null, 'hello');
   var fooBar = sub(foo, 'bar');
   var fooBarBla = sub(fooBar, 'bla');
 
@@ -88,7 +88,7 @@ test('Table based Sublevel', function(t){
   query('CREATE DATABASE IF NOT EXISTS mydown', function(){
     var sub = sublevelup(my);
 
-    var foo = sub('foo');
+    var foo = sub(null, 'foo');
     var hello = sub('hello');
     var fooBar = sub(foo, 'bar');
     var fooBarBla = sub(fooBar, 'bla');
