@@ -1,6 +1,6 @@
 {
   "name": "sublevelup",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "SubLevel implemented using LevelUP and PrefixDOWN",
   "dependencies": {
     "levelup": "^1.2.1",
