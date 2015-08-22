@@ -14,18 +14,20 @@ var db = levelup('db', {
 test('Default', function(t){
   var sublevel = sublevelup(db);
 
-  t.equal(sublevelup(sublevel), sublevel, 'Passing sublevel return sublevel');
-
   var hello = sublevel('hello');
   var foo = sublevel(null, 'foo', { keyEncoding: 'binary' });
   var fooBar = foo.sublevel('bar', { keyEncoding: 'json' });
   var fooBarBla = sublevel(fooBar, 'bla');
+
+  t.equal(sublevelup(sublevel), sublevel, 'up sublevel return sublevel');
+  t.equal(sublevelup(hello), hello, 'up sublevel return sublevel');
 
   t.equal(foo.location, '!foo!', 'base sub');
   t.equal(hello.location, '!hello!', 'base sub');
   t.equal(fooBar.location, '!foo#bar!', 'nested sub');
   t.equal(fooBarBla.location, '!foo#bar#bla!', 'double nested sub');
 
+  t.equal(hello, sublevel('hello'), 'reuse sublevel object');
   t.equal(fooBarBla, sublevel(fooBar, 'bla'), 'reuse sublevel object');
   t.equal(fooBarBla, fooBar.sublevel('bla'), 'reuse sublevel object');
 
