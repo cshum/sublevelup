@@ -13,7 +13,7 @@ test('Default', function(t){
   }));
 
   var hello = sublevel(db, 'hello');
-  var foo = sublevel(db, 'foo', { keyEncoding: 'binary' });
+  var foo = db.sublevel('foo', { keyEncoding: 'binary' });
   var fooBar = foo.sublevel('bar', { keyEncoding: 'json' });
   var fooBarBla = sublevel(fooBar, 'bla');
 
