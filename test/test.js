@@ -85,6 +85,21 @@ var codec = {
   }
 };
 
+test('Sublevel base with name', function(t){
+  var db = sublevel(levelup('this-is-not-sublevel', { db: memdown }), 'root');
+  var foo = sublevel(db, 'foo');
+  var hello = sublevel(db, 'hello');
+  var fooBar = sublevel(foo, 'bar');
+  var fooBarBla = fooBar.sublevel('bla');
+
+  t.equal(db.location, '!root!', 'base');
+  t.equal(foo.location, '!root#foo!', 'base sub');
+  t.equal(hello.location, '!root#hello!', 'base sub');
+  t.equal(fooBar.location, '!root#foo#bar!', 'nested sub');
+  t.equal(fooBarBla.location, '!root#foo#bar#bla!', 'double nested sub');
+
+  t.end();
+});
 test('Custom Prefix', function(t){
   var db = sublevel(levelup('db', { db: memdown }), { prefixEncoding: codec });
   var foo = sublevel(db, 'foo');

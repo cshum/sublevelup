@@ -60,8 +60,9 @@ function Sublevel (db, name, options) {
 
   options = xtend(defaults, db.options, options, override);
   var c = options.prefixEncoding;
-  var location = name ? 
-    c.encode(c.decode(db.location).concat(name)) : c.encode([]);
+  var location = name ? c.encode(
+    db instanceof Sublevel ? c.decode(db.location).concat(name) : [name]
+  ) : c.encode([]);
 
   this._sublevels = {};
 
@@ -71,7 +72,7 @@ function Sublevel (db, name, options) {
 inherits(Sublevel, LevelUP);
 
 Sublevel.prototype.sublevel = function (name, options) {
-  return this._sublevels[name] || Sublevel(this, name, options);
+  return Sublevel(this, name, options);
 };
 
 module.exports = Sublevel;
