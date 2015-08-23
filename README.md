@@ -7,7 +7,7 @@ Inspired by the
 SublevelUP aims to provide a unified [LevelUP](https://github.com/Level/levelup) sublevel interface for both 
 [prefix-based](#prefix-based-sublevel) and 
 [table-based](#table-based-sublevel) 
-backends with [custom codec](#custom-codec) support.
+backends with [custom encoding](#custom-encoding) support.
 
 [![Build Status](https://travis-ci.org/cshum/sublevelup.svg)](https://travis-ci.org/cshum/sublevelup)
 
@@ -107,7 +107,7 @@ var fooBarBla = fooBar.sublevel('bla'); //prefix !foo!!bar!!bla!
 
 ### sub = db.sublevel(name, [options])
 
-Nesting sublevel under `name`.
+Nesting Sublevel under `name`.
 
 ## License
 
