@@ -48,7 +48,7 @@ function Sublevel (db, name, options) {
       //Passing sublevel return sublevel
       return db;
     }
-  }else if(db instanceof LevelUP){
+  }else if(db.toString() === 'LevelUP'){
     //root is LevelUP, prefix based
     defaults.prefixEncoding = prefixCodec;
     override.db = prefix(db);
