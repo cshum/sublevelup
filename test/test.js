@@ -147,12 +147,13 @@ function query(sql, cb){
   connection.query(sql, cb);
   connection.end();
 }
-query('CREATE DATABASE IF NOT EXISTS mydown', function(){
-  var my = mydown('mydown', {
-    host: 'localhost',
-    user: 'root'
-  });
-  test('Table based Sublevel', function(t){
+var my;
+test('Table based Sublevel', function(t){
+  query('CREATE DATABASE IF NOT EXISTS mydown', function(){
+    my = mydown('mydown', {
+      host: 'localhost',
+      user: 'root'
+    });
     var db = sublevel(my);
     var foo = sublevel(db, 'foo');
     var hello = sublevel(db, 'hello');
@@ -178,7 +179,7 @@ query('CREATE DATABASE IF NOT EXISTS mydown', function(){
     fooBarBla.close();
     t.end();
   });
-  test('table batch prefix', function(t){
-    batchPrefix(t, sublevel(my));
-  });
+});
+test('table batch prefix', function(t){
+  batchPrefix(t, sublevel(my));
 });
