@@ -27,16 +27,16 @@ Unlike separated LevelDB instances, atomic batched write works across sublevels,
 SublevelUP uses [PrefixDOWN](https://github.com/cshum/prefixdown/) by default, which returns a prefixed backend by taking the base LevelUP instance. 
 
 ```js
-var level = require('level');
-var sublevel = require('sublevelup');
+var level = require('level')
+var sublevel = require('sublevelup')
 
 //prefix-based: passing LevelUP to Sublevel
-var db = sublevel(level('./db')); //prefix !!
+var db = sublevel(level('./db')) //prefix !!
 
-var hello = sublevel(db, 'hello'); //prefix !hello!
-var foo = db.sublevel('foo'); //prefix !foo!
-var fooBar = sublevel(foo, 'bar'); //prefix !foo#bar!
-var fooBarBla = fooBar.sublevel('bla'); //prefix !foo#bar#bla!
+var hello = sublevel(db, 'hello') //prefix !hello!
+var foo = db.sublevel('foo') //prefix !foo!
+var fooBar = sublevel(foo, 'bar') //prefix !foo#bar!
+var fooBarBla = fooBar.sublevel('bla') //prefix !foo#bar#bla!
 
 ```
 
@@ -51,20 +51,20 @@ Atomic batched write works across table-based sublevels, given most SQL database
 [MyDOWN](https://github.com/cshum/mydown) for example, a MySQL backend that exposes a LevelDOWN compatible factory, where `levelup()` specifies table as location argument:
 
 ```js
-var sublevel = require('sublevelup');
+var sublevel = require('sublevelup')
 var mydown = require('mydown')('db', {
   host: 'localhost',
   user: 'root',
   password: 'secret'
-});
+})
 
 //table-based: passing LevelDOWN to Sublevel
-var db = sublevel(mydown); //table _
+var db = sublevel(mydown) //table _
 
-var hello = sublevel(db, 'hello'); //table hello
-var foo = db.sublevel('foo'); //table foo
-var fooBar = sublevel(foo, 'bar'); //table foo_bar
-var fooBarBla = fooBar.sublevel('bla'); //table foo_bar_bla
+var hello = sublevel(db, 'hello') //table hello
+var foo = db.sublevel('foo') //table foo
+var fooBar = sublevel(foo, 'bar') //table foo_bar
+var fooBarBla = fooBar.sublevel('bla') //table foo_bar_bla
 
 ```
 
@@ -73,25 +73,25 @@ var fooBarBla = fooBar.sublevel('bla'); //table foo_bar_bla
 It is possible to create custom codec for sublevel prefix or table name by passing `options.prefixEncoding` for encode/decode function:
 
 ```js
-var level = require('level');
-var sublevel = require('sublevelup');
+var level = require('level')
+var sublevel = require('sublevelup')
 
 var codec = {
   encode: function (arr) {
-    return '!' + arr.join('!!') + '!';
+    return '!' + arr.join('!!') + '!'
   },
   decode: function (str) {
-    return str === '!!' ? [] : str.slice(1, -1).split('!!');
+    return str === '!!' ? [] : str.slice(1, -1).split('!!')
   }
-};
+}
 
 //prefix-based Sublevel with custom codec
-var db = sublevel(level('./db'), { prefixEncoding: codec }); //prefix !!
+var db = sublevel(level('./db'), { prefixEncoding: codec }) //prefix !!
 
-var hello = sublevel(db, 'hello'); //prefix !hello!
-var foo = db.sublevel('foo'); //prefix !foo!
-var fooBar = sublevel(foo, 'bar'); //prefix !foo!!bar!
-var fooBarBla = fooBar.sublevel('bla'); //prefix !foo!!bar!!bla!
+var hello = sublevel(db, 'hello') //prefix !hello!
+var foo = db.sublevel('foo') //prefix !foo!
+var fooBar = sublevel(foo, 'bar') //prefix !foo!!bar!
+var fooBarBla = fooBar.sublevel('bla') //prefix !foo!!bar!!bla!
 
 ```
 
