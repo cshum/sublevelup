@@ -1,15 +1,15 @@
 {
   "name": "sublevelup",
-  "version": "3.0.2",
+  "version": "3.0.4",
   "description": "SubLevel implemented using LevelUP and PrefixDOWN",
   "dependencies": {
     "levelup": "^1.2.1",
-    "prefixdown": "^1.1.2",
+    "prefixdown": "^1.1.6",
     "xtend": "^4.0.0"
   },
   "devDependencies": {
     "memdown": "^1.0.0",
-    "mydown": "^1.1.1",
+    "mydown": "^1.1.4",
     "mysql": "^2.9.0",
     "tape": "^4.1.0"
   },
