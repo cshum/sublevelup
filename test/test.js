@@ -47,33 +47,39 @@ test('Default', function(t){
   t.end();
 });
 
-test('batch prefix', function(t){
+function batchPrefix(t, db){
   t.plan(4);
-  var db = sublevel(levelup('db', { db:memdown }));
-  var a = sublevel(db, 'a');
-  var b = sublevel(db, 'b');
-  var c = sublevel(db, 'c');
+  var a = db.sublevel('a');
+  var ab = a.sublevel('b');
+  var abc = ab.sublevel('c');
 
   a.batch([
     { type: 'put', key: 'foo', value: '_', prefix: db },
     { type: 'put', key: 'foo', value: 'a' },
-    { type: 'put', key: 'foo', value: 'b', prefix: b },
-    { type: 'put', key: 'foo', value: 'c', prefix: '!c!' }
+    { type: 'put', key: 'foo', value: 'ab', prefix: ab },
+    { type: 'put', key: 'foo', value: 'abc', prefix: abc }
   ], function(){
     db.get('foo', function(err, val){
       t.equal(val, '_', 'base');
+      db.close();
     });
     a.get('foo', function(err, val){
-      t.equal(val, 'a', 'default prefix');
+      t.equal(val, 'a', 'sublevel prefix');
+      a.close();
     });
-    b.get('foo', function(err, val){
-      t.equal(val, 'b', 'levelup prefixdown prefix');
+    ab.get('foo', function(err, val){
+      t.equal(val, 'ab', 'sublevel prefix');
+      ab.close();
     });
-    c.get('foo', function(err, val){
-      t.equal(val, 'c', 'string prefix');
+    abc.get('foo', function(err, val){
+      t.equal(val, 'abc', 'sublevel prefix');
+      abc.close();
     });
   });
+}
 
+test('batch prefix', function(t){
+  batchPrefix(t, sublevel(levelup('db', { db:memdown })));
 });
 
 var codec = {
@@ -141,12 +147,12 @@ function query(sql, cb){
   connection.query(sql, cb);
   connection.end();
 }
-test('Table based Sublevel', function(t){
-  query('CREATE DATABASE IF NOT EXISTS mydown', function(){
-    var my = mydown('mydown', {
-      host: 'localhost',
-      user: 'root'
-    });
+query('CREATE DATABASE IF NOT EXISTS mydown', function(){
+  var my = mydown('mydown', {
+    host: 'localhost',
+    user: 'root'
+  });
+  test('Table based Sublevel', function(t){
     var db = sublevel(my);
     var foo = sublevel(db, 'foo');
     var hello = sublevel(db, 'hello');
@@ -171,5 +177,8 @@ test('Table based Sublevel', function(t){
     fooBar.close();
     fooBarBla.close();
     t.end();
+  });
+  test('table batch prefix', function(t){
+    batchPrefix(t, sublevel(my));
   });
 });

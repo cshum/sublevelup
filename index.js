@@ -21,17 +21,17 @@ var tableCodec = {
   }
 };
 
-function Sublevel (db, name, options) {
+function SublevelUP (db, name, options) {
   var defaults = {};
   var override = {};
 
   if(!db || typeof db === 'string') throw new Error('Missing sublevel base.');
 
-  if (!(this instanceof Sublevel)){
+  if (!(this instanceof SublevelUP)){
     //reuse sublevel
     if(db._sublevels && db._sublevels[name])
       return db._sublevels[name];
-    return new Sublevel(db, name, options);
+    return new SublevelUP(db, name, options);
   }
 
   if(typeof name !== 'string'){
@@ -39,7 +39,7 @@ function Sublevel (db, name, options) {
     name = null;
   }
 
-  if(db instanceof Sublevel){
+  if(db instanceof SublevelUP){
     if(name){
       override.db = db.options.db;
       override.prefixEncoding = db.options.prefixEncoding;
@@ -61,7 +61,7 @@ function Sublevel (db, name, options) {
   options = xtend(defaults, db.options, options, override);
   var c = options.prefixEncoding;
   var prefix = name ? c.encode(
-    db instanceof Sublevel ? c.decode(db.prefix).concat(name) : [name]
+    db instanceof SublevelUP ? c.decode(db.prefix).concat(name) : [name]
   ) : c.encode([]);
 
   this.prefix = prefix;
@@ -70,10 +70,10 @@ function Sublevel (db, name, options) {
   LevelUP.call(this, prefix, options);
 }
 
-inherits(Sublevel, LevelUP);
+inherits(SublevelUP, LevelUP);
 
-Sublevel.prototype.sublevel = function (name, options) {
-  return Sublevel(this, name, options);
+SublevelUP.prototype.sublevel = function (name, options) {
+  return SublevelUP(this, name, options);
 };
 
-module.exports = Sublevel;
+module.exports = SublevelUP;
