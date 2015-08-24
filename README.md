@@ -97,17 +97,19 @@ var fooBarBla = fooBar.sublevel('bla'); //prefix !foo!!bar!!bla!
 
 ## API
 
+Sublevel inherits methods of [LevelUP](https://github.com/Level/levelup#api) plus following:
+
 ### sub = sublevel(db, [name], [options])
 
 `db` is a 
 
-* LevelUP instance for [prefix-based](#prefix-based-sublevel) Sublevel
-* LevelDOWN instance for [table-based](#table-based-sublevel) Sublevel
-* Sublevel instance for nesting Sublevel under `name`
+* LevelUP instance for [prefix-based](#prefix-based-sublevel) sublevel
+* LevelDOWN instance for [table-based](#table-based-sublevel) sublevel
+* Sublevel instance for nesting sublevel under `name`
 
 ### sub = db.sublevel(name, [options])
 
-Nesting Sublevel under `name`.
+Nesting sublevel under `name`.
 
 ## License
 
