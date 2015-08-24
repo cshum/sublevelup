@@ -67,6 +67,7 @@ function SublevelUP (db, name, options) {
   this.prefix = prefix;
   this._sublevels = {};
 
+  //LevelUP.call(this, options.db(prefix), options);
   LevelUP.call(this, prefix, options);
 }
 
