@@ -1,7 +1,7 @@
-var prefix   = require('prefixdown'),
-    xtend    = require('xtend'),
-    inherits = require('util').inherits,
-    LevelUP  = require('levelup');
+var prefixdown = require('prefixdown'),
+    xtend      = require('xtend'),
+    inherits   = require('util').inherits,
+    LevelUP    = require('levelup');
 
 var prefixCodec = {
   encode: function (arr) {
@@ -51,7 +51,7 @@ function Sublevel (db, name, options) {
   }else if(db.toString() === 'LevelUP'){
     //root is LevelUP, prefix based
     defaults.prefixEncoding = prefixCodec;
-    override.db = prefix(db);
+    override.db = prefixdown(db);
   }else{
     //root is leveldown, table based
     defaults.prefixEncoding = tableCodec;
@@ -60,13 +60,14 @@ function Sublevel (db, name, options) {
 
   options = xtend(defaults, db.options, options, override);
   var c = options.prefixEncoding;
-  var location = name ? c.encode(
-    db instanceof Sublevel ? c.decode(db.location).concat(name) : [name]
+  var prefix = name ? c.encode(
+    db instanceof Sublevel ? c.decode(db.prefix).concat(name) : [name]
   ) : c.encode([]);
 
+  this.prefix = prefix;
   this._sublevels = {};
 
-  LevelUP.call(this, location, options);
+  LevelUP.call(this, prefix, options);
 }
 
 inherits(Sublevel, LevelUP);

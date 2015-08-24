@@ -20,11 +20,11 @@ test('Default', function(t){
   t.equal(sublevel(db), db, 'up sublevel return sublevel');
   t.equal(sublevel(hello), hello, 'up sublevel return sublevel');
 
-  t.equal(db.location, '!!', 'base');
-  t.equal(foo.location, '!foo!', 'base sub');
-  t.equal(hello.location, '!hello!', 'base sub');
-  t.equal(fooBar.location, '!foo#bar!', 'nested sub');
-  t.equal(fooBarBla.location, '!foo#bar#bla!', 'double nested sub');
+  t.equal(db.prefix, '!!', 'base');
+  t.equal(foo.prefix, '!foo!', 'base sub');
+  t.equal(hello.prefix, '!hello!', 'base sub');
+  t.equal(fooBar.prefix, '!foo#bar!', 'nested sub');
+  t.equal(fooBarBla.prefix, '!foo#bar#bla!', 'double nested sub');
 
   t.equal(hello, sublevel(db, 'hello'), 'reuse sublevel object');
   t.equal(fooBarBla, sublevel(fooBar, 'bla'), 'reuse sublevel object');
@@ -92,11 +92,11 @@ test('Sublevel base with name', function(t){
   var fooBar = sublevel(foo, 'bar');
   var fooBarBla = fooBar.sublevel('bla');
 
-  t.equal(db.location, '!root!', 'base');
-  t.equal(foo.location, '!root#foo!', 'base sub');
-  t.equal(hello.location, '!root#hello!', 'base sub');
-  t.equal(fooBar.location, '!root#foo#bar!', 'nested sub');
-  t.equal(fooBarBla.location, '!root#foo#bar#bla!', 'double nested sub');
+  t.equal(db.prefix, '!root!', 'base');
+  t.equal(foo.prefix, '!root#foo!', 'base sub');
+  t.equal(hello.prefix, '!root#hello!', 'base sub');
+  t.equal(fooBar.prefix, '!root#foo#bar!', 'nested sub');
+  t.equal(fooBarBla.prefix, '!root#foo#bar#bla!', 'double nested sub');
 
   t.end();
 });
@@ -107,11 +107,11 @@ test('Custom Prefix', function(t){
   var fooBar = sublevel(foo, 'bar');
   var fooBarBla = fooBar.sublevel('bla');
 
-  t.equal(db.location, '!!', 'base');
-  t.equal(foo.location, '!foo!', 'base sub');
-  t.equal(hello.location, '!hello!', 'base sub');
-  t.equal(fooBar.location, '!foo!!bar!', 'nested sub');
-  t.equal(fooBarBla.location, '!foo!!bar!!bla!', 'double nested sub');
+  t.equal(db.prefix, '!!', 'base');
+  t.equal(foo.prefix, '!foo!', 'base sub');
+  t.equal(hello.prefix, '!hello!', 'base sub');
+  t.equal(fooBar.prefix, '!foo!!bar!', 'nested sub');
+  t.equal(fooBarBla.prefix, '!foo!!bar!!bla!', 'double nested sub');
 
   t.end();
 });
@@ -122,11 +122,11 @@ test('Custom Prefix 2', function(t){
   var fooBar = sublevel(foo, 'bar');
   var fooBarBla = fooBar.sublevel('bla');
 
-  t.equal(db.location, '!!', 'base');
-  t.equal(foo.location, '!foo!', 'base sub');
-  t.equal(hello.location, '!hello!', 'base sub');
-  t.equal(fooBar.location, '!foo!!bar!', 'nested sub');
-  t.equal(fooBarBla.location, '!foo!!bar!!bla!', 'double nested sub');
+  t.equal(db.prefix, '!!', 'base');
+  t.equal(foo.prefix, '!foo!', 'base sub');
+  t.equal(hello.prefix, '!hello!', 'base sub');
+  t.equal(fooBar.prefix, '!foo!!bar!', 'nested sub');
+  t.equal(fooBarBla.prefix, '!foo!!bar!!bla!', 'double nested sub');
 
   t.end();
 });
@@ -153,11 +153,11 @@ test('Table based Sublevel', function(t){
     var fooBar = sublevel(foo, 'bar');
     var fooBarBla = fooBar.sublevel('bla');
 
-    t.equal(db.location, '_', 'base');
-    t.equal(foo.location, 'foo', 'base sub');
-    t.equal(hello.location, 'hello', 'base sub');
-    t.equal(fooBar.location, 'foo_bar', 'nested sub');
-    t.equal(fooBarBla.location, 'foo_bar_bla', 'double nested sub');
+    t.equal(db.prefix, '_', 'base');
+    t.equal(foo.prefix, 'foo', 'base sub');
+    t.equal(hello.prefix, 'hello', 'base sub');
+    t.equal(fooBar.prefix, 'foo_bar', 'nested sub');
+    t.equal(fooBarBla.prefix, 'foo_bar_bla', 'double nested sub');
 
     t.equal(db.options.db, my, 'Correct DOWN');
     t.equal(foo.options.db, my, 'Correct DOWN');
