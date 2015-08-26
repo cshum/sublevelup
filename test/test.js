@@ -187,6 +187,28 @@ test('Table based Sublevel', function (t) {
   })
 })
 
+test('Table sublevel base with name', function (t) {
+  var db = sublevel(my, 'root')
+
+  var foo = db.sublevel('foo')
+  var hello = db.sublevel('hello')
+  var fooBar = foo.sublevel('bar')
+  var fooBarBla = fooBar.sublevel('bla')
+
+  t.equal(db.prefix, 'root', 'base')
+  t.equal(foo.prefix, 'root_foo', 'base sub')
+  t.equal(hello.prefix, 'root_hello', 'base sub')
+  t.equal(fooBar.prefix, 'root_foo_bar', 'nested sub')
+  t.equal(fooBarBla.prefix, 'root_foo_bar_bla', 'double nested sub')
+
+  db.close()
+  foo.close()
+  hello.close()
+  fooBar.close()
+  fooBarBla.close()
+  t.end()
+})
+
 test('table batch prefix', function (t) {
   batchPrefix(t, sublevel(my))
 })
