@@ -44,9 +44,11 @@ var fooBarBla = fooBar.sublevel('bla') //prefix !foo#bar#bla!
 
 The prefix approach, while a good fit for LevelDB, ill-suited for using SQL database as a LevelUP backend.
 Concatenating every sublevels into one single table is not ideal for B-tree index that most SQL database uses.
-There is also no reason not to utilise tables since they serve the exact same purpose. Hence the table-based sublevel.
+There is also no reason not to utilise tables since they serve the exact same purpose. 
 
+Table based sublevel works for the [LevelDOWN](https://github.com/Level/abstract-leveldown) modules where `location` argument defines the table `DOWN(table)`.
 Atomic batched write works across table-based sublevels, given most SQL databases support transactions across tables. 
+
 [MyDOWN](https://github.com/cshum/mydown) for example, a MySQL backend suits well as a table-based sublevel.
 
 ```js
