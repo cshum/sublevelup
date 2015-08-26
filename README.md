@@ -47,8 +47,7 @@ Concatenating every sublevels into one single table is not ideal for B-tree inde
 There is also no reason not to utilise tables since they serve the exact same purpose. Hence the table-based sublevel.
 
 Atomic batched write works across table-based sublevels, given most SQL databases support transactions across tables. 
-
-[MyDOWN](https://github.com/cshum/mydown) for example, a MySQL backend that exposes a LevelDOWN compatible factory, where `levelup()` specifies table as location argument:
+[MyDOWN](https://github.com/cshum/mydown) for example, a MySQL backend suits well as a table-based sublevel.
 
 ```js
 var sublevel = require('sublevelup');
