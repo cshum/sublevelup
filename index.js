@@ -26,6 +26,11 @@ function SublevelUP (db, name, options) {
     throw new Error('Missing sublevel base.')
   }
 
+  if (db instanceof SublevelUP && typeof name !== 'string') {
+    // Passing sublevel return sublevel
+    return db
+  }
+
   if (!(this instanceof SublevelUP)) {
     // reuse sublevel
     if (db._sublevels && db._sublevels[name]) {
@@ -43,14 +48,9 @@ function SublevelUP (db, name, options) {
   var override = {}
 
   if (db instanceof SublevelUP) {
-    if (name) {
-      override.db = db.options.db
-      override.prefixEncoding = db.options.prefixEncoding
-      db._sublevels[name] = this
-    } else {
-      // Passing sublevel return sublevel
-      return db
-    }
+    override.db = db.options.db
+    override.prefixEncoding = db.options.prefixEncoding
+    db._sublevels[name] = this
   } else if (db.toString() === 'LevelUP') {
     // root is LevelUP, prefix based
     defaults.prefixEncoding = prefixCodec

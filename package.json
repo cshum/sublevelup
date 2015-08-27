@@ -1,6 +1,6 @@
 {
   "name": "sublevelup",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "Separated sections of LevelUP",
   "dependencies": {
     "levelup": "^1.2.1",
