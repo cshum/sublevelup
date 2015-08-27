@@ -17,9 +17,6 @@ test('Default', function (t) {
   var fooBar = foo.sublevel('bar', { keyEncoding: 'json' })
   var fooBarBla = sublevel(fooBar, 'bla')
 
-  t.equal(sublevel(db), db, 'up sublevel return sublevel')
-  t.equal(sublevel(hello), hello, 'up sublevel return sublevel')
-
   t.equal(db.prefix, '!!', 'base')
   t.equal(foo.prefix, '!foo!', 'base sub')
   t.equal(hello.prefix, '!hello!', 'base sub')
@@ -39,6 +36,18 @@ test('Default', function (t) {
   t.equal(foo.options.valueEncoding, 'json', 'inherit options')
   t.equal(foo.options.keyEncoding, 'binary', 'extend options')
   t.equal(fooBar.options.keyEncoding, 'json', 'extend options')
+
+  t.equal(sublevel(db), db, 'up sublevel return sublevel')
+  t.equal(sublevel(hello), hello, 'up sublevel return sublevel')
+
+  var helloPrefix = hello.prefix
+  var hello2 = sublevel(hello, { valueEncoding: 'binary' })
+
+  t.notOk(hello2 === hello, 'up sublevel with options return new sublevel')
+  t.equal(hello.options.valueEncoding, 'json', 'orig sublevel retain options')
+  t.equal(hello2.options.valueEncoding, 'binary', 'up sublevel extend options')
+  t.equal(hello.prefix, helloPrefix, 'orig sublevel retain prefix')
+  t.equal(hello2.prefix, helloPrefix, 'up sublevel retain prefix')
 
   t.throws(function () { sublevel() }, {
     name: 'Error', message: 'Missing sublevel base.'
