@@ -5,7 +5,7 @@ var memdown = require('memdown')
 var mydown = require('mydown')
 var mysql = require('mysql')
 
-test('Default', function (t) {
+test('Sublevel default usage', function (t) {
   var db = sublevel(levelup('db', {
     db: memdown,
     keyEncoding: 'utf8',

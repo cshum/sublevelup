@@ -27,10 +27,12 @@ function SublevelUP (db, name, options) {
   }
 
   if (db instanceof SublevelUP && typeof name !== 'string') {
-    // Passing sublevel return sublevel
     if (name) {
+      // passing sublevel with options
+      // new instance, same prefix, extended options
       return new SublevelUP(db, null, name)
     } else if (!options) {
+      // Passing sublevel return sublevel
       return db
     }
   }
@@ -44,6 +46,7 @@ function SublevelUP (db, name, options) {
   }
 
   if (typeof name !== 'string' && !options) {
+    // sublevel(db, options)
     options = name
     name = null
   }
@@ -54,7 +57,10 @@ function SublevelUP (db, name, options) {
   if (db instanceof SublevelUP) {
     override.db = db.options.db
     override.prefixEncoding = db.options.prefixEncoding
-    if (name) db._sublevels[name] = this
+    if (name) {
+      // memorize child
+      db._sublevels[name] = this
+    }
   } else if (db.toString() === 'LevelUP') {
     // root is LevelUP, prefix based
     defaults.prefixEncoding = prefixCodec
@@ -65,23 +71,28 @@ function SublevelUP (db, name, options) {
     override.db = db
   }
 
+  // sublevel children
+  this._sublevels = {}
+
   options = xtend(defaults, db.options, options, override)
   var c = options.prefixEncoding
   if (name) {
     if (db instanceof SublevelUP) {
+      // concat sublevel prefix with name
       this.prefix = c.encode(c.decode(db.prefix).concat(name))
     } else {
+      // levelup/down with name argument
       this.prefix = c.encode([name])
     }
   } else {
     if (db instanceof SublevelUP) {
+      // retain sublevel prefix
       this.prefix = db.prefix
     } else {
+      // levelup/down without name argument
       this.prefix = c.encode([])
     }
   }
-
-  this._sublevels = {}
 
   // LevelUP.call(this, options.db(prefix), options)
   LevelUP.call(this, this.prefix, options)
