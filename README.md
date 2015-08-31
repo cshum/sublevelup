@@ -4,7 +4,7 @@ Separated sections of [LevelUP](https://github.com/Level/levelup).
 
 SublevelUP models "sublevel" as a separated table sections, provides 
 idiomatic mapping to both
-[key prefix](#prefix-based-sublevel) and [table based](#table-based-sublevel) backends.
+[key prefix](#prefix-based-sublevel) sublevels and [table based](#table-based-sublevel) backends.
  
 [![Build Status](https://travis-ci.org/cshum/sublevelup.svg)](https://travis-ci.org/cshum/sublevelup)
 
@@ -99,7 +99,7 @@ Sublevel inherits methods of [LevelUP](https://github.com/Level/levelup#api) plu
 `db` is a 
 
 * LevelUP instance for [prefix-based](#prefix-based-sublevel) sublevel
-* LevelDOWN instance for [table-based](#table-based-sublevel) sublevel
+* LevelDOWN constructor for [table-based](#table-based-sublevel) sublevel
 * Sublevel instance for nesting sublevel under `name`
 
 ### sub = db.sublevel(name, [options])
