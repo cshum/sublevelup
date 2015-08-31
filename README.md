@@ -1,16 +1,12 @@
 # SublevelUP
 
-Separated sections of LevelUP.
+Separated sections of [LevelUP](https://github.com/Level/levelup).
 
-Inspired by the 
-[many](https://github.com/dominictarr/level-sublevel) [sublevel](https://github.com/mafintosh/subleveldown) [modules](https://github.com/stagas/sublevel), 
-SublevelUP aims to provide a unified [LevelUP](https://github.com/Level/levelup) sublevel interface for both 
-[prefix-based](#prefix-based-sublevel) and 
-[table-based](#table-based-sublevel) 
-backends with [custom encoding](#custom-encoding) support.
-
+SublevelUP models "sublevel" as a separated table sections, provides 
+idiomatic mapping to both
+[key prefix](#prefix-based-sublevel) and [table based](#table-based-sublevel) backends.
+ 
 [![Build Status](https://travis-ci.org/cshum/sublevelup.svg)](https://travis-ci.org/cshum/sublevelup)
-
 
 ```
 npm install sublevelup
@@ -24,13 +20,13 @@ Given the fact that LevelDB stores entries lexicographically sorted by keys,
 it is possible to creating a "sandboxed" section using ranged key prefix.
 Unlike separated LevelDB instances, atomic batched write works across sublevels, which is an important primitive for consistency.
 
-SublevelUP uses [PrefixDOWN](https://github.com/cshum/prefixdown/) by default, which returns a prefixed backend by taking the base LevelUP instance. 
+SublevelUP encodes key prefix using `!` padding with `#` separator. This means *nested* sublevels are also *separated*.
 
 ```js
 var level = require('level')
 var sublevel = require('sublevelup')
 
-//prefix-based: passing LevelUP to Sublevel
+//Prefix-based: passing LevelUP to Sublevel
 var db = sublevel(level('./db')) //prefix !!
 
 var hello = sublevel(db, 'hello') //prefix !hello!
@@ -46,8 +42,10 @@ The prefix approach, while a good fit for LevelDB, ill-suited for using SQL data
 Concatenating every sublevels into one single table is not ideal for B-tree index that most SQL database uses.
 There is also no reason not to utilise tables since they serve the exact same purpose. 
 
-Table based sublevel works for the [LevelDOWN](https://github.com/Level/abstract-leveldown) modules where `location` argument defines the table `DOWN(table)`.
+SublevelUP provides idiomatic mapping to tables based [LevelDOWN](https://github.com/Level/abstract-leveldown) modules where `location` argument defines the table `DOWN(table)`.
 Atomic batched write works across table-based sublevels, given most SQL databases support transactions across tables. 
+
+Table prefix are encoded using `_` separator.
 
 [MyDOWN](https://github.com/cshum/mydown) for example, a MySQL backend suits well as a table-based sublevel.
 
@@ -59,7 +57,7 @@ var mydown = require('mydown')('db', {
   password: 'secret'
 })
 
-//table-based: passing LevelDOWN to Sublevel
+//Table-based: passing LevelDOWN to Sublevel
 var db = sublevel(mydown) //table _
 
 var hello = sublevel(db, 'hello') //table hello
@@ -71,29 +69,25 @@ var fooBarBla = fooBar.sublevel('bla') //table foo_bar_bla
 
 ## Custom Encoding
 
-It is possible to create custom codec for sublevel prefix or table name by passing `options.prefixEncoding` for encode/decode function:
+It is possible to create custom codec for sublevel prefix or table name by passing `options.prefixEncoding` for encode/decode function,
+such as [bytewise](https://github.com/deanlandolt/bytewise-core):
 
 ```js
 var level = require('level')
 var sublevel = require('sublevelup')
 
+var bytewise = require('bytewise-core')
 var codec = {
   encode: function (arr) {
-    return '!' + arr.join('!!') + '!'
+    return bytewise.encode(arr).toString('binary')
   },
   decode: function (str) {
-    return str === '!!' ? [] : str.slice(1, -1).split('!!')
+    return bytewise.decode(new Buffer(str, 'binary'))
   }
 }
 
 //prefix-based Sublevel with custom codec
-var db = sublevel(level('./db'), { prefixEncoding: codec }) //prefix !!
-
-var hello = sublevel(db, 'hello') //prefix !hello!
-var foo = db.sublevel('foo') //prefix !foo!
-var fooBar = sublevel(foo, 'bar') //prefix !foo!!bar!
-var fooBarBla = fooBar.sublevel('bla') //prefix !foo!!bar!!bla!
-
+var db = sublevel(level('./db'), { prefixEncoding: codec })
 ```
 
 ## API

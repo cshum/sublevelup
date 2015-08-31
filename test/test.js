@@ -4,6 +4,7 @@ var levelup = require('levelup')
 var memdown = require('memdown')
 var mydown = require('mydown')
 var mysql = require('mysql')
+var bytewise = require('bytewise-core')
 
 test('Sublevel default usage', function (t) {
   var db = sublevel(levelup('db', {
@@ -97,10 +98,10 @@ test('batch prefix', function (t) {
 
 var codec = {
   encode: function (arr) {
-    return '!' + arr.join('!!') + '!'
+    return bytewise.encode(arr).toString('binary')
   },
   decode: function (str) {
-    return str === '!!' ? [] : str.slice(1, -1).split('!!')
+    return bytewise.decode(new Buffer(str, 'binary'))
   }
 }
 
@@ -122,30 +123,18 @@ test('Sublevel base with name', function (t) {
 test('Custom Prefix', function (t) {
   var db = sublevel(levelup('db', { db: memdown }), { prefixEncoding: codec })
   var foo = sublevel(db, 'foo')
-  var hello = sublevel(db, 'hello')
-  var fooBar = sublevel(foo, 'bar')
-  var fooBarBla = fooBar.sublevel('bla')
 
-  t.equal(db.prefix, '!!', 'base')
-  t.equal(foo.prefix, '!foo!', 'base sub')
-  t.equal(hello.prefix, '!hello!', 'base sub')
-  t.equal(fooBar.prefix, '!foo!!bar!', 'nested sub')
-  t.equal(fooBarBla.prefix, '!foo!!bar!!bla!', 'double nested sub')
+  t.equal(db.prefix, ' \x00', 'base')
+  t.equal(foo.prefix, ' pfoo\x00\x00', 'base sub')
 
   t.end()
 })
 test('Custom Prefix 2', function (t) {
   var db = sublevel(levelup('db', { db: memdown, prefixEncoding: codec }))
   var foo = sublevel(db, 'foo')
-  var hello = sublevel(db, 'hello')
-  var fooBar = sublevel(foo, 'bar')
-  var fooBarBla = fooBar.sublevel('bla')
 
-  t.equal(db.prefix, '!!', 'base')
-  t.equal(foo.prefix, '!foo!', 'base sub')
-  t.equal(hello.prefix, '!hello!', 'base sub')
-  t.equal(fooBar.prefix, '!foo!!bar!', 'nested sub')
-  t.equal(fooBarBla.prefix, '!foo!!bar!!bla!', 'double nested sub')
+  t.equal(db.prefix, ' \x00', 'base')
+  t.equal(foo.prefix, ' pfoo\x00\x00', 'base sub')
 
   t.end()
 })

@@ -8,6 +8,7 @@
     "xtend": "^4.0.0"
   },
   "devDependencies": {
+    "bytewise-core": "^1.2.3",
     "memdown": "^1.0.0",
     "mydown": "^1.1.4",
     "mysql": "^2.9.0",
