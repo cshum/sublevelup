@@ -2,9 +2,9 @@
 
 Separated sections of [LevelUP](https://github.com/Level/levelup).
 
-SublevelUP models "sublevel" as a separated table sections, provides 
+SublevelUP models "sublevel" as separated table sections, providing
 idiomatic mapping to both
-[key prefix](#prefix-based-sublevel) sublevels and [table based](#table-based-sublevel) backends.
+[key prefix](#key-prefix-sublevel) sublevels and [table based](#table-based-sublevel) backends.
  
 [![Build Status](https://travis-ci.org/cshum/sublevelup.svg)](https://travis-ci.org/cshum/sublevelup)
 
@@ -12,7 +12,7 @@ idiomatic mapping to both
 npm install sublevelup
 ```
 
-## Prefix-based sublevel
+## Key-prefix sublevel
 
 The "standard" way of creating sublevels.
 
@@ -20,13 +20,13 @@ Given the fact that LevelDB stores entries lexicographically sorted by keys,
 it is possible to creating a "sandboxed" section using ranged key prefix.
 Unlike separated LevelDB instances, atomic batched write works across sublevels, which is an important primitive for consistency.
 
-SublevelUP encodes key prefix using `!` padding with `#` separator. This means *nested* sublevels are also *separated*.
+SublevelUP encodes key prefix using `!` padding with `#` separator. That means *nested* sublevels are also *separated*.
 
 ```js
 var level = require('level')
 var sublevel = require('sublevelup')
 
-//Prefix-based: passing LevelUP to Sublevel
+//Key-prefix: passing LevelUP to Sublevel
 var db = sublevel(level('./db')) //prefix !!
 
 var hello = sublevel(db, 'hello') //prefix !hello!
@@ -86,7 +86,7 @@ var codec = {
   }
 }
 
-//prefix-based Sublevel with custom codec
+//Key-prefix Sublevel with custom codec
 var db = sublevel(level('./db'), { prefixEncoding: codec })
 ```
 
@@ -98,7 +98,7 @@ Sublevel inherits methods of [LevelUP](https://github.com/Level/levelup#api) plu
 
 `db` is a 
 
-* LevelUP instance for [prefix-based](#prefix-based-sublevel) sublevel
+* LevelUP instance for [key-prefix](#key-prefix-sublevel) sublevel
 * LevelDOWN constructor for [table-based](#table-based-sublevel) sublevel
 * Sublevel instance for nesting sublevel under `name`
 
