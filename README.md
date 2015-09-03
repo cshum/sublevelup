@@ -6,7 +6,7 @@ SublevelUP models "sublevel" as separated table sections, providing
 idiomatic mapping to both
 [key prefix](#key-prefix-sublevel) sublevels and [table based](#table-based-sublevel) backends.
 
-SublevelUP is a "superclass" of LevelUP, which means full compatibility with the latest LevelUP interface. 
+SublevelUP is a "superclass" of LevelUP, which means full compatibility with latest LevelUP interface. 
  
 [![Build Status](https://travis-ci.org/cshum/sublevelup.svg)](https://travis-ci.org/cshum/sublevelup)
 
@@ -70,18 +70,19 @@ var fooBarBla = fooBar.sublevel('bla') //table foo_bar_bla
 ```
 
 ## Batch prefix
-`batch()` is a transactional operation that can be applied across sublevels, by setting the `prefix: sub` property.
+`batch()` is a transactional operation that works across sublevels, by setting the `prefix: sub` property.
 ```js
 var db = sublevel(mydown)
 var a = db.sublevel('a')
 var b = db.sublevel('b')
 
+// batch from a
 a.batch([
   { type: 'put', key: 'foo', value: 'a' },
   { type: 'put', key: 'foo', value: 'b', prefix: b }, //put into b
 ], function () {
-  a.get('foo', function (err, val) { val === 'a' })
-  b.get('foo', function (err, val) { val === 'b' })
+  a.get('foo', function (err, val) { }) // val === 'a'
+  b.get('foo', function (err, val) { }) // val === 'b'
 })
 ```
 
