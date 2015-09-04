@@ -6,7 +6,7 @@ SublevelUP models "sublevel" as separated table sections, providing
 idiomatic mapping to both
 [key prefix](#key-prefix-sublevel) sublevels and [table based](#table-based-sublevel) backends.
 
-SublevelUP is a "superclass" of LevelUP, which means full compatibility with latest LevelUP interface. 
+SublevelUP is a "subclass" of LevelUP, which means full compatibility with latest LevelUP interface. 
  
 [![Build Status](https://travis-ci.org/cshum/sublevelup.svg)](https://travis-ci.org/cshum/sublevelup)
 
