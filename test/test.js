@@ -8,20 +8,13 @@ var mysql = require('mysql')
 var bytewise = require('bytewise-core')
 
 test('Sublevel default usage', function (t) {
-  var roots = [
-    levelup('db', {
-      db: memdown,
-      keyEncoding: 'utf8',
-      valueEncoding: 'json'
-    }),
-    levelSublevel(
-      levelup('db', {
-        db: memdown,
-        keyEncoding: 'utf8',
-        valueEncoding: 'json'
-      })
-    ).sublevel('whatever')
-  ]
+  var db = levelup('db', {
+    db: memdown,
+    keyEncoding: 'utf8',
+    valueEncoding: 'json'
+  })
+  var roots = [db, levelSublevel(db).sublevel('whatever')]
+
   roots.forEach(function (root) {
     var db = sublevel(root)
 
