@@ -61,7 +61,10 @@ function SublevelUP (db, name, options) {
       // memorize child
       db._sublevels[name] = this
     }
-  } else if (db.toString() === 'LevelUP') {
+  } else if (
+    db.toString() === 'LevelUP' || // levelup instance
+    typeof db.sublevel === 'function' // level-sublevel instance
+  ) {
     // root is LevelUP, prefix based
     defaults.prefixEncoding = prefixCodec
     override.db = prefixdown(db)

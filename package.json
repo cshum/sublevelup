@@ -9,6 +9,7 @@
   },
   "devDependencies": {
     "bytewise-core": "^1.2.3",
+    "level-sublevel": "^6.5.2",
     "memdown": "^1.0.0",
     "mydown": "^1.1.4",
     "mysql": "^2.9.0",
