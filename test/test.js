@@ -1,55 +1,67 @@
 var sublevel = require('../')
 var test = require('tape')
 var levelup = require('levelup')
-// var levelSublevel = require('level-sublevel')
+var levelSublevel = require('level-sublevel')
 var memdown = require('memdown')
 var mydown = require('mydown')
 var mysql = require('mysql')
 var bytewise = require('bytewise-core')
 
 test('Sublevel default usage', function (t) {
-  var db = sublevel(levelup('db', {
-    db: memdown,
-    keyEncoding: 'utf8',
-    valueEncoding: 'json'
-  }))
+  var roots = [
+    levelup('db', {
+      db: memdown,
+      keyEncoding: 'utf8',
+      valueEncoding: 'json'
+    }),
+    levelSublevel(
+      levelup('db', {
+        db: memdown,
+        keyEncoding: 'utf8',
+        valueEncoding: 'json'
+      })
+    ).sublevel('whatever')
+  ]
+  roots.forEach(function (root) {
+    var db = sublevel(root)
 
-  var hello = sublevel(db, 'hello')
-  var foo = db.sublevel('foo', { keyEncoding: 'binary' })
-  var fooBar = foo.sublevel('bar', { keyEncoding: 'json' })
-  var fooBarBla = sublevel(fooBar, 'bla')
+    var hello = sublevel(db, 'hello')
+    var foo = db.sublevel('foo', { keyEncoding: 'binary' })
+    var fooBar = foo.sublevel('bar', { keyEncoding: 'json' })
+    var fooBarBla = sublevel(fooBar, 'bla')
 
-  t.equal(db.prefix, '!!', 'base')
-  t.equal(foo.prefix, '!foo!', 'base sub')
-  t.equal(hello.prefix, '!hello!', 'base sub')
-  t.equal(fooBar.prefix, '!foo#bar!', 'nested sub')
-  t.equal(fooBarBla.prefix, '!foo#bar#bla!', 'double nested sub')
+    t.equal(db.prefix, '!!', 'base')
+    t.equal(foo.prefix, '!foo!', 'base sub')
+    t.equal(hello.prefix, '!hello!', 'base sub')
+    t.equal(fooBar.prefix, '!foo#bar!', 'nested sub')
+    t.equal(fooBarBla.prefix, '!foo#bar#bla!', 'double nested sub')
 
-  t.equal(hello, sublevel(db, 'hello'), 'reuse sublevel object')
-  t.equal(fooBarBla, sublevel(fooBar, 'bla'), 'reuse sublevel object')
-  t.equal(fooBarBla, fooBar.sublevel('bla'), 'reuse sublevel object')
+    t.equal(hello, sublevel(db, 'hello'), 'reuse sublevel object')
+    t.equal(fooBarBla, sublevel(fooBar, 'bla'), 'reuse sublevel object')
+    t.equal(fooBarBla, fooBar.sublevel('bla'), 'reuse sublevel object')
 
-  t.equal(foo.toString(), 'LevelUP', 'LevelUP')
-  t.equal(fooBar.toString(), 'LevelUP', 'LevelUP')
-  t.ok(foo instanceof levelup, 'LevelUP')
-  t.ok(fooBar instanceof levelup, 'LevelUP')
+    t.equal(foo.toString(), 'LevelUP', 'LevelUP')
+    t.equal(fooBar.toString(), 'LevelUP', 'LevelUP')
+    t.ok(foo instanceof levelup, 'LevelUP')
+    t.ok(fooBar instanceof levelup, 'LevelUP')
 
-  t.equal(hello.options.valueEncoding, 'json', 'inherit options')
-  t.equal(foo.options.valueEncoding, 'json', 'inherit options')
-  t.equal(foo.options.keyEncoding, 'binary', 'extend options')
-  t.equal(fooBar.options.keyEncoding, 'json', 'extend options')
+    t.equal(hello.options.valueEncoding, 'json', 'inherit options')
+    t.equal(foo.options.valueEncoding, 'json', 'inherit options')
+    t.equal(foo.options.keyEncoding, 'binary', 'extend options')
+    t.equal(fooBar.options.keyEncoding, 'json', 'extend options')
 
-  t.equal(sublevel(db), db, 'up sublevel return sublevel')
-  t.equal(sublevel(hello), hello, 'up sublevel return sublevel')
+    t.equal(sublevel(db), db, 'up sublevel return sublevel')
+    t.equal(sublevel(hello), hello, 'up sublevel return sublevel')
 
-  var helloPrefix = hello.prefix
-  var hello2 = sublevel(hello, { valueEncoding: 'binary' })
+    var helloPrefix = hello.prefix
+    var hello2 = sublevel(hello, { valueEncoding: 'binary' })
 
-  t.notOk(hello2 === hello, 'up sublevel with options return new sublevel')
-  t.equal(hello.options.valueEncoding, 'json', 'orig sublevel retain options')
-  t.equal(hello2.options.valueEncoding, 'binary', 'up sublevel extend options')
-  t.equal(hello.prefix, helloPrefix, 'orig sublevel retain prefix')
-  t.equal(hello2.prefix, helloPrefix, 'up sublevel retain prefix')
+    t.notOk(hello2 === hello, 'up sublevel with options return new sublevel')
+    t.equal(hello.options.valueEncoding, 'json', 'orig sublevel retain options')
+    t.equal(hello2.options.valueEncoding, 'binary', 'up sublevel extend options')
+    t.equal(hello.prefix, helloPrefix, 'orig sublevel retain prefix')
+    t.equal(hello2.prefix, helloPrefix, 'up sublevel retain prefix')
+  })
 
   t.throws(function () { sublevel() }, {
     name: 'Error', message: 'Missing sublevel base.'
@@ -95,6 +107,12 @@ function batchPrefix (t, db) {
 
 test('batch prefix', function (t) {
   batchPrefix(t, sublevel(levelup('db', { db: memdown })))
+})
+
+test('level-sublevel batch prefix', function (t) {
+  batchPrefix(t, sublevel(
+    levelSublevel(levelup('db', { db: memdown })).sublevel('whatever')
+  ))
 })
 
 var codec = {
