@@ -79,26 +79,26 @@ function SublevelUP (db, name, options) {
 
   options = xtend(defaults, db.options, options, override)
   var c = options.prefixEncoding
+  var location
   if (name) {
     if (db instanceof SublevelUP) {
-      // concat sublevel prefix with name
-      this.prefix = c.encode(c.decode(db.prefix).concat(name))
+      // concat sublevel prefix location with name
+      location = c.encode(c.decode(db.location).concat(name))
     } else {
       // levelup/down with name argument
-      this.prefix = c.encode([name])
+      location = c.encode([name])
     }
   } else {
     if (db instanceof SublevelUP) {
-      // retain sublevel prefix
-      this.prefix = db.prefix
+      // retain sublevel prefix location
+      location = db.location
     } else {
       // levelup/down without name argument
-      this.prefix = c.encode([])
+      location = c.encode([])
     }
   }
-
-  // LevelUP.call(this, options.db(prefix), options)
-  LevelUP.call(this, this.prefix, options)
+  // LevelUP.call(this, options.db(location), options)
+  LevelUP.call(this, location, options)
 }
 
 inherits(SublevelUP, LevelUP)
