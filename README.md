@@ -125,6 +125,14 @@ Sublevel inherits methods of [LevelUP](https://github.com/Level/levelup#api) plu
 
 Nesting sublevel under `name`.
 
+## Why not use a different sublevel package?
+
+This exists because I want:
+
+* A sublevel that exposes a LevelUP instance i.e. not [subleveldown](https://github.com/mafintosh/subleveldown)
+* [level-sublevel](https://github.com/dominictarr/level-sublevel) goodness such as `.sublevel()` method and prefix: subdb for `.batch()`
+* Compatibility with [level-transactions](https://github.com/cshum/level-transactions)
+
 ## License
 
 MIT
