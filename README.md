@@ -14,9 +14,42 @@ SublevelUP is a "subclass" of LevelUP, which means full compatibility with lates
 npm install sublevelup
 ```
 
-## Key-prefix sublevel
+## API
 
-The "standard" way of creating sublevels.
+Sublevel inherits methods of [LevelUP](https://github.com/Level/levelup#api) plus following:
+
+### `sub = sublevel(db, [name], [options])`
+
+`db` is a 
+
+* LevelUP instance for [key-prefix](#key-prefix-sublevel) sublevel
+* LevelDOWN constructor for [table-based](#table-based-sublevel) sublevel
+* Sublevel instance for nesting sublevel under `name`
+
+### `sub = db.sublevel(name, [options])`
+
+Nesting sublevel under `name`.
+
+### Batch prefix
+`batch()` is a transactional operation that works across sublevels, by setting the `prefix: sub` property.
+```js
+var db = sublevel(mydown)
+var a = db.sublevel('a')
+var b = db.sublevel('b')
+
+// batch from a
+a.batch([
+  { type: 'put', key: 'foo', value: 'a' },
+  { type: 'put', key: 'foo', value: 'b', prefix: b }, //put into b
+], function () {
+  a.get('foo', function (err, val) { }) // val === 'a'
+  b.get('foo', function (err, val) { }) // val === 'b'
+})
+```
+
+## Encoding
+
+### Key-prefix sublevel
 
 Given the fact that LevelDB stores entries lexicographically sorted by keys,
 it is possible to creating a "sandboxed" section using ranged key prefix.
@@ -38,18 +71,12 @@ var fooBarBla = fooBar.sublevel('bla') //prefix !foo#bar#bla!
 
 ```
 
-## Table-based sublevel
+### Table-based sublevel
 
-The prefix approach, while a good fit for LevelDB, ill-suited for using SQL database as a LevelUP backend.
-Concatenating every sublevels into one single table is not ideal for B-tree index that most SQL database uses.
-There is also no reason not to utilise tables since they serve the exact same purpose. 
-
-SublevelUP provides idiomatic mapping to tables based [LevelDOWN](https://github.com/Level/abstract-leveldown) modules where `location` argument defines the table `DOWN(table)`.
+SublevelUP also provides idiomatic mapping to tables based [LevelDOWN](https://github.com/Level/abstract-leveldown) modules where `location` argument defines the table `DOWN(table)`.
 Atomic batched write works across table-based sublevels, given most SQL databases support transactions across tables. 
 
-Table prefix are encoded using `_` separator.
-
-[MyDOWN](https://github.com/cshum/mydown) for example, a MySQL backend suits well as a table-based sublevel.
+By default, table prefix are encoded using `_` separator.
 
 ```js
 var sublevel = require('sublevelup')
@@ -69,24 +96,7 @@ var fooBarBla = fooBar.sublevel('bla') //table foo_bar_bla
 
 ```
 
-## Batch prefix
-`batch()` is a transactional operation that works across sublevels, by setting the `prefix: sub` property.
-```js
-var db = sublevel(mydown)
-var a = db.sublevel('a')
-var b = db.sublevel('b')
-
-// batch from a
-a.batch([
-  { type: 'put', key: 'foo', value: 'a' },
-  { type: 'put', key: 'foo', value: 'b', prefix: b }, //put into b
-], function () {
-  a.get('foo', function (err, val) { }) // val === 'a'
-  b.get('foo', function (err, val) { }) // val === 'b'
-})
-```
-
-## Custom encoding
+### Custom encoding
 
 It is possible to create custom codec for sublevel prefix or table name by passing `options.prefixEncoding` for encode/decode function,
 such as [bytewise](https://github.com/deanlandolt/bytewise-core):
@@ -108,30 +118,28 @@ var codec = {
 //Key-prefix Sublevel with custom codec
 var db = sublevel(level('./db'), { prefixEncoding: codec })
 ```
+### Custom encoding
 
-## API
+It is possible to create custom codec for sublevel prefix or table name by passing `options.prefixEncoding` for encode/decode function,
+such as [bytewise](https://github.com/deanlandolt/bytewise-core):
 
-Sublevel inherits methods of [LevelUP](https://github.com/Level/levelup#api) plus following:
+```js
+var level = require('level')
+var sublevel = require('sublevelup')
 
-### sub = sublevel(db, [name], [options])
+var bytewise = require('bytewise-core')
+var codec = {
+  encode: function (arr) {
+    return bytewise.encode(arr).toString('binary')
+  },
+  decode: function (str) {
+    return bytewise.decode(new Buffer(str, 'binary'))
+  }
+}
 
-`db` is a 
-
-* LevelUP instance for [key-prefix](#key-prefix-sublevel) sublevel
-* LevelDOWN constructor for [table-based](#table-based-sublevel) sublevel
-* Sublevel instance for nesting sublevel under `name`
-
-### sub = db.sublevel(name, [options])
-
-Nesting sublevel under `name`.
-
-## Why not use a different sublevel package?
-
-This exists because I want:
-
-* A sublevel that exposes a LevelUP instance i.e. not [subleveldown](https://github.com/mafintosh/subleveldown)
-* [level-sublevel](https://github.com/dominictarr/level-sublevel) goodness such as `.sublevel()` method and prefix: subdb for `.batch()`
-* Compatibility with [level-transactions](https://github.com/cshum/level-transactions)
+//Key-prefix Sublevel with custom codec
+var db = sublevel(level('./db'), { prefixEncoding: codec })
+```
 
 ## License
 
