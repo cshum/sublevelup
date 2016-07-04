@@ -98,4 +98,8 @@ SublevelUP.prototype.sublevel = function (name, options) {
   return SublevelUP(this, name, options)
 }
 
+SublevelUP.prototype.levelup = function () {
+  return this._levelup
+}
+
 module.exports = SublevelUP

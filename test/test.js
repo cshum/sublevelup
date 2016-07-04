@@ -21,11 +21,11 @@ test('Sublevel default usage', function (t) {
     var fooBar = foo.sublevel('bar', { keyEncoding: 'json' })
     var fooBarBla = sublevel(fooBar, 'bla')
 
-    t.equal(db._levelup, root, '_levelup reference')
-    t.equal(foo._levelup, root, '_levelup reference')
-    t.equal(hello._levelup, root, '_levelup reference')
-    t.equal(fooBar._levelup, root, '_levelup reference')
-    t.equal(fooBarBla._levelup, root, '_levelup reference')
+    t.equal(db.levelup(), root, 'base levelup() ref')
+    t.equal(foo.levelup(), root, 'base sub levelup() ref')
+    t.equal(hello.levelup(), root, 'base sub levelup() ref')
+    t.equal(fooBar.levelup(), root, 'nested levelup() ref')
+    t.equal(fooBarBla.levelup(), root, 'double nested levelup() ref')
 
     t.equal(db.location, '!!', 'base')
     t.equal(foo.location, '!foo!', 'base sub')
