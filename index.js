@@ -12,18 +12,9 @@ var prefixCodec = {
   }
 }
 
-var tableCodec = {
-  encode: function (arr) {
-    return arr.length ? arr.join('_') : '_'
-  },
-  decode: function (str) {
-    return str === '_' ? [] : str.split('_')
-  }
-}
-
 function SublevelUP (db, name, options) {
   if (!db || typeof db === 'string') {
-    throw new Error('Missing sublevel base.')
+    throw new Error('db must be a LevelUP or SubLevelUP instance')
   }
 
   if (db instanceof SublevelUP && typeof name !== 'string') {
@@ -55,6 +46,7 @@ function SublevelUP (db, name, options) {
   var override = {}
 
   if (db instanceof SublevelUP) {
+    this._levelup = db._levelup
     override.db = db.options.db
     override.prefixEncoding = db.options.prefixEncoding
     if (name) {
@@ -65,13 +57,12 @@ function SublevelUP (db, name, options) {
     db.toString() === 'LevelUP' || // levelup instance
     typeof db.sublevel === 'function' // level-sublevel instance
   ) {
+    this._levelup = db
     // root is LevelUP, prefix based
     defaults.prefixEncoding = prefixCodec
     override.db = prefixdown(db)
   } else {
-    // root is leveldown, table based
-    defaults.prefixEncoding = tableCodec
-    override.db = db
+    throw new Error('db must be a LevelUP or SubLevelUP instance')
   }
 
   // sublevel children

@@ -21,6 +21,12 @@ test('Sublevel default usage', function (t) {
     var fooBar = foo.sublevel('bar', { keyEncoding: 'json' })
     var fooBarBla = sublevel(fooBar, 'bla')
 
+    t.equal(db._levelup, root, '_levelup reference')
+    t.equal(foo._levelup, root, '_levelup reference')
+    t.equal(hello._levelup, root, '_levelup reference')
+    t.equal(fooBar._levelup, root, '_levelup reference')
+    t.equal(fooBarBla._levelup, root, '_levelup reference')
+
     t.equal(db.location, '!!', 'base')
     t.equal(foo.location, '!foo!', 'base sub')
     t.equal(hello.location, '!hello!', 'base sub')
@@ -148,58 +154,3 @@ test('Custom Prefix 2', function (t) {
 
   t.end()
 })
-
-var down = memdown
-
-test('Table based Sublevel', function (t) {
-  var db = sublevel(down)
-  var foo = sublevel(db, 'foo')
-  var hello = sublevel(db, 'hello')
-  var fooBar = sublevel(foo, 'bar')
-  var fooBarBla = fooBar.sublevel('bla')
-
-  t.equal(db.location, '_', 'base')
-  t.equal(foo.location, 'foo', 'base sub')
-  t.equal(hello.location, 'hello', 'base sub')
-  t.equal(fooBar.location, 'foo_bar', 'nested sub')
-  t.equal(fooBarBla.location, 'foo_bar_bla', 'double nested sub')
-
-  t.equal(db.options.db, down, 'Correct DOWN')
-  t.equal(foo.options.db, down, 'Correct DOWN')
-  t.equal(hello.options.db, down, 'Correct DOWN')
-  t.equal(fooBar.options.db, down, 'Correct DOWN')
-  t.equal(fooBarBla.options.db, down, 'Correct DOWN')
-
-  db.close()
-  foo.close()
-  hello.close()
-  fooBar.close()
-  fooBarBla.close()
-  t.end()
-})
-
-test('Table sublevel base with name', function (t) {
-  var db = sublevel(down, 'root')
-
-  var foo = db.sublevel('foo')
-  var hello = db.sublevel('hello')
-  var fooBar = foo.sublevel('bar')
-  var fooBarBla = fooBar.sublevel('bla')
-
-  t.equal(db.location, 'root', 'base')
-  t.equal(foo.location, 'root_foo', 'base sub')
-  t.equal(hello.location, 'root_hello', 'base sub')
-  t.equal(fooBar.location, 'root_foo_bar', 'nested sub')
-  t.equal(fooBarBla.location, 'root_foo_bar_bla', 'double nested sub')
-
-  db.close()
-  foo.close()
-  hello.close()
-  fooBar.close()
-  fooBarBla.close()
-  t.end()
-})
-
-// test('table batch prefix', function (t) {
-//   batchPrefix(t, sublevel(down))
-// })
