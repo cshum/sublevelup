@@ -8,7 +8,7 @@ Separated sections of [LevelUP](https://github.com/Level/levelup).
 npm install sublevelup
 ```
 
-SublevelUP is built by extending [levelup](https://github.com/Level/levelup) and [abstract-leveldown](https://github.com/Level/abstract-leveldown), which means full compatibility with official LevelUP interface. 
+SublevelUP is built by extending [levelup](https://github.com/Level/levelup) with [prefixdown](https://github.com/cshum/prefixdown), which means full compatibility with official LevelUP interface. 
  
 SublevelUP follows the same prefix encoding as [level-sublevel](https://github.com/dominictarr/level-sublevel). Also supports `.sublevel()` and `options.prefix`, which makes a drop-in replacement.
 
