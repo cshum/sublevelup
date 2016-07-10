@@ -70,7 +70,7 @@ var sublevel = require('sublevelup')
 var subdb = sublevel(level('./db'))
 
 var hello = sublevel(subdb, 'hello')
-var foo = db.sublevel('foo')j
+var foo = db.sublevel('foo')
 var fooBar = sublevel(foo, 'bar')
 var fooBarBla = fooBar.sublevel('bla')
 
