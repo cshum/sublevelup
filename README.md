@@ -20,14 +20,12 @@ Sublevel inherits methods of [LevelUP](https://github.com/Level/levelup#api) plu
 
 #### `subdb = sublevel(db, [name], [options])`
 
+#### `nested = subdb.sublevel(name, [options])`
+
 `db` is a LevelUP or SublevelUP instance returns nested sublevel under `name`.
 
-#### `subdb = db.sublevel(name, [options])`
-
-Nesting sublevel under `name`.
-
 #### `options.prefix`
-`batch()` is a transactional operation that works across sublevels, by setting the `prefix: subdb` property.
+`batch()` is an atomic operation that works across sublevels, by setting the `prefix: subdb` property.
 ```js
 var db = sublevel(levelup('./db'))
 var a = db.sublevel('a')
@@ -62,19 +60,25 @@ fooBar.levelup() === db
 
 SublevelUP encodes key prefix using `!` padding with `#` separator. That means *nested* sublevels are also *separated*.
 
+Sublevel prefix can be accessed via LevelUP's `db.location` property.
+
 ```js
 var level = require('level')
 var sublevel = require('sublevelup')
 
 //Key-prefix: passing LevelUP to Sublevel
-var subdb = sublevel(level('./db')) //prefix !!
+var subdb = sublevel(level('./db'))
 
-var hello = sublevel(subdb, 'hello') //prefix !hello!
-var foo = db.sublevel('foo') //prefix !foo!
-var fooBar = sublevel(foo, 'bar') //prefix !foo#bar!
-var fooBarBla = fooBar.sublevel('bla') //prefix !foo#bar#bla!
+var hello = sublevel(subdb, 'hello')
+var foo = db.sublevel('foo')j
+var fooBar = sublevel(foo, 'bar')
+var fooBarBla = fooBar.sublevel('bla')
 
+console.log(subdb.location) // !!
+console.log(hello.location) // !hello!
+console.log(foo.location) // !foo!
 console.log(fooBar.location) // !foo#bar!
+console.log(fooBarBla.location) // !foo#bar#bla!
 ```
 
 #### `options.prefixEncoding`
