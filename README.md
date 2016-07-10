@@ -2,28 +2,32 @@
 
 Separated sections of [LevelUP](https://github.com/Level/levelup).
 
-SublevelUP is a "subclass" of LevelUP, which means full compatibility with official LevelUP interface. 
- 
 [![Build Status](https://travis-ci.org/cshum/sublevelup.svg)](https://travis-ci.org/cshum/sublevelup)
 
 ```
 npm install sublevelup
 ```
 
+SublevelUP is built by extending [levelup](https://github.com/Level/levelup) and [abstract-leveldown](https://github.com/Level/abstract-leveldown), which means full compatibility with official LevelUP interface. 
+ 
+SublevelUP follows the same prefix encoding as [level-sublevel](https://github.com/dominictarr/level-sublevel). Also supports `.sublevel()` and `options.prefix`, which makes a drop-in replacement.
+
+SublevelUP works with [level-transactions](https://github.com/cshum/level-transactions), featuring in-memory locking mechanisms and isolations across sublevels.
+
 ## API
 
 Sublevel inherits methods of [LevelUP](https://github.com/Level/levelup#api) plus following:
 
-#### `sub = sublevel(db, [name], [options])`
+#### `subdb = sublevel(db, [name], [options])`
 
 `db` is a LevelUP or SublevelUP instance returns nested sublevel under `name`.
 
-#### `sub = db.sublevel(name, [options])`
+#### `subdb = db.sublevel(name, [options])`
 
 Nesting sublevel under `name`.
 
 #### `options.prefix`
-`batch()` is a transactional operation that works across sublevels, by setting the `prefix: sub` property.
+`batch()` is a transactional operation that works across sublevels, by setting the `prefix: subdb` property.
 ```js
 var db = sublevel(levelup('./db'))
 var a = db.sublevel('a')
@@ -39,19 +43,19 @@ a.batch([
 })
 ```
 
-#### `sub.levelup()`
+#### `subdb.levelup()`
 
 Returns its base LevelUP instance.
 
 ```js
-var base = levelup('./db')
-var sub = sublevel(base)
-var foo = sub.sublevel('foo')
+var db = levelup('./db')
+var subdb = sublevel(db)
+var foo = subdb.sublevel('foo')
 var fooBar = foo.sublevel('bar')
 
-sub.levelup() === base
-foo.levelup() === base
-fooBar.levelup() === base
+subdb.levelup() === db
+foo.levelup() === db
+fooBar.levelup() === db
 ```
 
 ## Encoding
@@ -63,13 +67,14 @@ var level = require('level')
 var sublevel = require('sublevelup')
 
 //Key-prefix: passing LevelUP to Sublevel
-var db = sublevel(level('./db')) //prefix !!
+var subdb = sublevel(level('./db')) //prefix !!
 
-var hello = sublevel(db, 'hello') //prefix !hello!
+var hello = sublevel(subdb, 'hello') //prefix !hello!
 var foo = db.sublevel('foo') //prefix !foo!
 var fooBar = sublevel(foo, 'bar') //prefix !foo#bar!
 var fooBarBla = fooBar.sublevel('bla') //prefix !foo#bar#bla!
 
+console.log(fooBar.location) // !foo#bar!
 ```
 
 #### `options.prefixEncoding`
